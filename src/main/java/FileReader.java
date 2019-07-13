@@ -1,4 +1,6 @@
-import java.io.BufferedReader;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,17 +25,15 @@ public class FileReader implements Runnable {
     public void run() {
         File file = new File(fileName);
         try {
-            BufferedReader br = new BufferedReader(new java.io.FileReader(file));
-            String st;
             int count = 0;
-            st = br.readLine();
-            while(st != null) {
+            LineIterator lineIterator = FileUtils.lineIterator(file);
+            while(lineIterator.hasNext()) {
                 int size = 0;
                 FileContent fileContent = new FileContent(new ArrayList<>());
-                while(size < 4*MB && st != null) {
+                while(size < 4*MB && lineIterator.hasNext()) {
+                    String st = lineIterator.nextLine();
                     size += Character.SIZE * st.length();
                     fileContent.appendLine(new Line(st, ++count));
-                    st = br.readLine();
                 }
                 blockingQueue.put(fileContent);
             }
