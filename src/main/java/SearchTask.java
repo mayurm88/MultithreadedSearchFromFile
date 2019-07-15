@@ -28,7 +28,7 @@ public class SearchTask implements Runnable {
         }
     }
 
-    private void search(FileContent fileContent, String searchWord) {
+    static void search(FileContent fileContent, String searchWord) {
         for(Line line : fileContent.getLines()) {
             if(line.getLine().contains(searchWord)) {
                 System.out.println(searchWord + ":" + "Line number: " + line.getLineNumber() + " - " + line.getLine());
