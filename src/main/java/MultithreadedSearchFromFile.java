@@ -10,8 +10,8 @@ public class MultithreadedSearchFromFile {
         FileReader fileReader = new FileReader(filePath, blockingQueue);
         fileReadExecutor.execute(fileReader);
         int numCpus = Runtime.getRuntime().availableProcessors();
-        System.out.println("Creating a fixed thread pool of size: " + (numCpus - 1));
-        ExecutorService searchExecutorService = Executors.newFixedThreadPool(numCpus - 1);
+        System.out.println("Creating a fixed thread pool of size: " + Math.max(numCpus - 1, 1));
+        ExecutorService searchExecutorService = Executors.newFixedThreadPool(Math.max(numCpus - 1, 1));
         for(int i = 0; i < numCpus - 1; i++) {
             SearchTask searchTask = new SearchTask(blockingQueue, "pulvinar");
             searchExecutorService.execute(searchTask);
