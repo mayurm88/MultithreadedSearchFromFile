@@ -30,7 +30,7 @@ public class FileReader implements Runnable {
             while(lineIterator.hasNext()) {
                 int size = 0;
                 FileContent fileContent = new FileContent(new ArrayList<>());
-                while(size < 4*MB && lineIterator.hasNext()) {
+                while(size < MB && lineIterator.hasNext()) {
                     String st = lineIterator.nextLine();
                     size += Character.SIZE * st.length();
                     fileContent.appendLine(new Line(st, ++count));

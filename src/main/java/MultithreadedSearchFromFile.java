@@ -5,10 +5,9 @@ public class MultithreadedSearchFromFile {
     private final static String filePath = "./resources/veryBigRandomText.txt";
 
     public static void main(String[] args) {
-        BlockingQueue<FileContent> blockingQueue = new LinkedBlockingDeque<>();
-        ExecutorService fileReadExecutor = Executors.newSingleThreadExecutor();
-        FileReader fileReader = new FileReader(filePath, blockingQueue);
-        fileReadExecutor.execute(fileReader);
+        BlockingQueue<FileContent> blockingQueue = new LinkedBlockingDeque<>(500);
+
+        // Starting the consumer threads first
         int numCpus = Runtime.getRuntime().availableProcessors();
         System.out.println("Creating a fixed thread pool of size: " + Math.max(numCpus - 1, 1));
         ExecutorService searchExecutorService = Executors.newFixedThreadPool(Math.max(numCpus - 1, 1));
@@ -16,6 +15,13 @@ public class MultithreadedSearchFromFile {
             SearchTask searchTask = new SearchTask(blockingQueue, "pulvinar");
             searchExecutorService.execute(searchTask);
         }
+
+        // Starting the producer thread
+        ExecutorService fileReadExecutor = Executors.newSingleThreadExecutor();
+        FileReader fileReader = new FileReader(filePath, blockingQueue);
+        fileReadExecutor.execute(fileReader);
+
+
         fileReadExecutor.shutdown();
         searchExecutorService.shutdown();
         try {
